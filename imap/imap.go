@@ -371,10 +371,22 @@ func (c *Client) Copy(seq *SeqSet, mbox string) (cmd *Command, err error) {
 	return c.Send("COPY", seq, c.Quote(UTF7Encode(mbox)))
 }
 
+// Move moves the specified message(s) to the end of the specified destination
+// mailbox.
+func (c *Client) Move(seq *SeqSet, mbox string) (cmd *Command, err error) {
+	return c.Send("MOVE", seq, c.Quote(UTF7Encode(mbox)))
+}
+
 // UIDSearch is identical to Search, but the numbers returned in the response
 // are unique identifiers instead of message sequence numbers.
 func (c *Client) UIDSearch(spec ...Field) (cmd *Command, err error) {
 	return c.Send("UID SEARCH", append([]Field{"CHARSET", "UTF-8"}, spec...)...)
+}
+
+// UIDMove is identical to Move, but the seq argument is interpreted as
+// containing unique identifiers instead of message sequence numbers.
+func (c *Client) UIDMove(seq *SeqSet, mbox string) (cmd *Command, err error) {
+	return c.Send("UID MOVE", seq, c.Quote(UTF7Encode(mbox)))
 }
 
 // UIDFetch is identical to Fetch, but the seq argument is interpreted as
