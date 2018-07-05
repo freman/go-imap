@@ -75,6 +75,9 @@ type Client struct {
 	// this map. The server may not support all commands known to the client.
 	CommandConfig map[string]*CommandConfig
 
+	// CharacterSet used by the server
+	CharacterSet string
+
 	// Server host name for authentication and STARTTLS commands.
 	host string
 

@@ -345,12 +345,29 @@ func (c *Client) Expunge(uids *SeqSet) (cmd *Command, err error) {
 	return c.Send("EXPUNGE")
 }
 
+// The SORT command is a variant of SEARCH with sorting semantics for
+// the results.
+// It is the caller's responsibility to quote strings when necessary. All strings
+// must use UTF-8 encoding.
+func (c *Client) Sort(sort Field, spec ...Field) (cmd *Command, err error) {
+	return c.Send("SORT", append([]Field{sort, c.CharacterSet}, spec...)...)
+}
+
+// UIDSort is identical to Sort, but the numbers returned in the response
+// are unique identifiers instead of message sequence numbers.
+func (c *Client) UIDSort(sort Field, spec ...Field) (cmd *Command, err error) {
+	return c.Send("UID SORT", append([]Field{sort, c.CharacterSet}, spec...)...)
+}
+
 // Search searches the mailbox for messages that match the given searching
 // criteria. See RFC 3501 section 6.4.4 for a list of all valid search keys. It
 // is the caller's responsibility to quote strings when necessary. All strings
 // must use UTF-8 encoding.
 func (c *Client) Search(spec ...Field) (cmd *Command, err error) {
-	return c.Send("SEARCH", append([]Field{"CHARSET", "UTF-8"}, spec...)...)
+	if c.CharacterSet != "" {
+		spec = append([]Field{"CHARSET", c.CharacterSet}, spec...)
+	}
+	return c.Send("SEARCH", spec...)
 }
 
 // Fetch retrieves data associated with the specified message(s) in the mailbox.
@@ -380,7 +397,10 @@ func (c *Client) Move(seq *SeqSet, mbox string) (cmd *Command, err error) {
 // UIDSearch is identical to Search, but the numbers returned in the response
 // are unique identifiers instead of message sequence numbers.
 func (c *Client) UIDSearch(spec ...Field) (cmd *Command, err error) {
-	return c.Send("UID SEARCH", append([]Field{"CHARSET", "UTF-8"}, spec...)...)
+	if c.CharacterSet != "" {
+		spec = append([]Field{"CHARSET", c.CharacterSet}, spec...)
+	}
+	return c.Send("UID SEARCH", spec...)
 }
 
 // UIDMove is identical to Move, but the seq argument is interpreted as

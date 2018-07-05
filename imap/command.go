@@ -336,6 +336,8 @@ func defaultCommands() map[string]*CommandConfig {
 		"FETCH":      &CommandConfig{States: sel, Filter: FetchFilter},
 		"STORE":      &CommandConfig{States: sel, Filter: FetchFilter},
 		"COPY":       &CommandConfig{States: sel},
+		"SORT":       &CommandConfig{States: sel, Filter: NameFilter},
+		"UID SORT":   &CommandConfig{States: sel, Filter: NameFilter},
 		"UID SEARCH": &CommandConfig{States: sel, Filter: NameFilter},
 		"UID FETCH":  &CommandConfig{States: sel, Filter: FetchFilter},
 		"UID STORE":  &CommandConfig{States: sel, Filter: FetchFilter},
